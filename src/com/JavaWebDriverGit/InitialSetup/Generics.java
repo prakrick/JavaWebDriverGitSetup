@@ -5,6 +5,6 @@ public class Generics {
 	//https://git-scm.com/book/en/v2/
 	//https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup
 	public static void main(String[] args) {
-		System.out.println("hello world");
+		System.out.println("hello");
 	}
 }
