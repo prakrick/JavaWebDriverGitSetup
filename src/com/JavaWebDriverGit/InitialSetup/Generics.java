@@ -7,6 +7,6 @@ public class Generics {
 	public static void main(String[] args) {
 		System.out.println("desktop version. Mounted the clone in eclipse. Test . from eclipse");
 //mote ka project
-		//no
+		//noted
 	}
 }
