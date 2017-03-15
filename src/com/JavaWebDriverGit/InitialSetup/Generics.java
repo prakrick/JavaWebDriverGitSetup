@@ -5,8 +5,9 @@ public class Generics {
 	//https://git-scm.com/book/en/v2/
 	//https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup
 	public static void main(String[] args) {
-		System.out.println("desktop version. Mounted the clone in eclipse. Test . from eclipse");
-//mote ka project
+		System.out.println("desktop version. Mounted the clone in eclipse. Test. from eclipse");
+
 		//noted
+		
 	}
 }
