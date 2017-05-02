@@ -8,6 +8,7 @@ public class TestScripts {
 	public static void main(String[] args) throws IOException {
 		ReadConfig readConfigObj = new ReadConfig();
 		readConfigObj.getPropValues();
+		System.out.println("merge check");
 	}
 
 }
