@@ -10,7 +10,7 @@ import cucumber.api.junit.Cucumber;
 @CucumberOptions(
 		features = "Feature"
 	,glue={"com.JavaWebDriverGit.TestScript"}
-		,monochrome=true
+		,monochrome=true // more readable console output
 		,dryRun=true //:: checks and imforms if there is any unimplemented mehtod
 		)
 public class TestRunner {
