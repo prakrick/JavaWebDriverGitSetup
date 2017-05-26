@@ -11,6 +11,7 @@ import cucumber.api.junit.Cucumber;
 		features = "Feature"
 	,glue={"com.JavaWebDriverGit.TestScript"}
 		,monochrome=true
+		,dryRun=true //:: checks and imforms if there is any unimplemented mehtod
 		)
 public class TestRunner {
 

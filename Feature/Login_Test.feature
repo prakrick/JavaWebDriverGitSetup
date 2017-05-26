@@ -28,3 +28,8 @@ Scenario: Successful Login with Valid Credentials
 Scenario: Successful LogOut
 	When User LogOut from the Application
 	Then Message displayed LogOut Successfully
+	
+	
+Scenario: Check if dryRun Adds unimplemented method
+	When User dryRun True enabled created method in given
+	Then dryRun True enabled created method in given
