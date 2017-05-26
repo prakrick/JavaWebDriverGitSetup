@@ -14,7 +14,7 @@ import cucumber.api.java.en.When;
 
 public class Test_Steps {
 
-	WebDriver driver = null;
+	private static WebDriver driver = null;
 
 	@Given("^User is on Home Page$")
 	public void user_is_on_Home_Page() throws Throwable {

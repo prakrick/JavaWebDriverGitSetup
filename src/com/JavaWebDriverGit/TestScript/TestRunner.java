@@ -10,6 +10,7 @@ import cucumber.api.junit.Cucumber;
 @CucumberOptions(
 		features = "Feature"
 	,glue={"com.JavaWebDriverGit.TestScript"}
+		,monochrome=true
 		)
 public class TestRunner {
 
