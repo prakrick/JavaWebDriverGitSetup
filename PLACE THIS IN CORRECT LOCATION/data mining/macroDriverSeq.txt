@@ -1,0 +1,102 @@
+Sub Button1_Click()
+
+ 'create dictionary object
+        Dim sPrimitiveName As String
+        Dim sDriverSequenceNumber As String
+        Dim sTestCaseName As String
+        Dim sExecutionComment As String
+        Dim iTimeTaken As String
+        Set DictObj = CreateObject("Scripting.Dictionary")
+        'get used row count
+        RowCount = Worksheets("sheet1").UsedRange.Rows.Count
+        For i = 1 To RowCount
+        'check if Fn or Prmitive
+        sData = Range("C" & i)
+            If InStr(1, sData, "Fn_") Then
+            'check if primitive name is same for two consecutive entries
+                sPrimitiveName = Range("C" & i)
+                iTimeTaken = Range("D" & i)
+            sDriverSequenceNumber = Range("A" & i)
+                    'verify the end of execution of the primitive
+                If ((Range("C" & i).Value = Range("C" & i + 1).Value) And ((Range("B" & i).Value = Range("B" & i + 1).Value) And (Range("D" & i).Value > Range("D" & i + 1).Value)) Or (Range("B" & i).Value <> Range("B" & i + 1).Value)) Or (Range("C" & i).Value <> Range("C" & i + 1).Value) Then
+                    'fetch the driver sequence number and check if the driver sequence is available in dictionary
+                    'Dictionary object format, DriverSequence:TC_count:PrimitiveCount
+                    If DictObj.Exists(sDriverSequenceNumber) Then
+                    'update the primitive execution count
+                        sTemp = DictObj.Item(sDriverSequenceNumber)
+                        arrTemp = Split(sTemp, ":")
+                        arrTemp(1) = arrTemp(1) + 1
+                    'add the updated data in dictionary
+                        sTemp = arrTemp(0) & ":" & arrTemp(1)
+                        DictObj.Item(sDriverSequenceNumber) = sTemp
+                    Else
+                        'if driver sequence is new then add it to the dictionary list
+                        sTemp = "0:1"
+                        DictObj.Add sDriverSequenceNumber, sTemp
+                    End If
+                End If
+                
+            ElseIf InStr(1, sData, "T") Then
+                sDriverSequenceNumber = Range("A" & i)
+                sExecutionComment = Range("E" & i)
+                'check the comment contains Exection time keyword which states that the execution has completed for the particular Test Case
+                'Note: stage data is also included
+                    If InStr(1, sExecutionComment, "TestCase Execution Time") Then
+                    'fetch the driver sequence number and check if the driver sequence is available in dictionary
+                    'Dictionary object format, DriverSequence:TC_count:PrimitiveCount
+                        If DictObj.Exists(sDriverSequenceNumber) Then
+                            'update the primitive execution count
+                            sTemp = DictObj.Item(sDriverSequenceNumber)
+                            arrTemp = Split(sTemp, ":")
+                            arrTemp(0) = arrTemp(0) + 1
+                        'add the updated data in dictionary
+                            sTemp = arrTemp(0) & ":" & arrTemp(1)
+                            DictObj.Item(sDriverSequenceNumber) = sTemp
+                         Else
+                            'if driver sequence is new then add it to the dictionary list
+                            sTemp = "1:0"
+                            DictObj.Add sDriverSequenceNumber, sTemp
+                        End If
+                    End If
+            End If
+        Next
+        Call writeInExcel(DictObj, "C:\Demo_DB_Graphs\demoGraphDataBreakdownRelease17_1.xlsx")
+            
+    End Sub
+    
+    
+    'write in excel code
+    Function writeInExcel(objKeyValue, sFilePath)
+        
+        Set objExcel = CreateObject("Excel.Application")
+        MsgBox "Writing in Excel. Click OK to continue"
+        objExcel.Workbooks.Open (sFilePath)
+        objExcel.Visible = False
+        With objExcel.Worksheets("ExecutionPerDriverSequence")
+            .Range("A2:F" & .Range("A2").End(xlDown).Row).ClearContents
+            .Range("B2:F" & .Range("A2").End(xlDown).Row).ClearContents
+            .Range("C2:F" & .Range("A2").End(xlDown).Row).ClearContents
+        End With
+        iRow = 2
+        For Each objKey In objKeyValue.Keys()
+            objExcel.Workbooks(1).Worksheets("ExecutionPerDriverSequence").Cells(iRow, 1).Value = objKey
+            arrValues = Split(objKeyValue.Item(objKey), ":")
+            objExcel.Workbooks(1).Worksheets("ExecutionPerDriverSequence").Cells(iRow, 2).Value = arrValues(0)
+            objExcel.Workbooks(1).Worksheets("ExecutionPerDriverSequence").Cells(iRow, 3).Value = arrValues(1)
+            iRow = iRow + 1
+            objExcel.ActiveWorkbook.Save
+            
+        Next
+        
+        objExcel.ActiveWorkbook.Save
+        objExcel.ActiveWorkbook.Close
+        objExcel.Application.Quit
+        'Cleanup
+        Set objExcel = Nothing
+        MsgBox "Driver sequence data ready to view. Click OK and open the ExecutionPerDriverSequence sheet in the main graph excel to view the CLEAN data"
+    End Function
+    
+    
+
+
+

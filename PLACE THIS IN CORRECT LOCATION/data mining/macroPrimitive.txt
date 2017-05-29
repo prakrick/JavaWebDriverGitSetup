@@ -1,0 +1,79 @@
+Sub Button3_Click()
+'create dictionary object
+    Dim sPrimitiveName As String
+    Dim sPrimitiveStatus As String
+    Dim iPassedCount As Integer
+    Dim iFailedCount As Integer
+    Dim iTimeaken As Integer
+    
+    Set DictObj = CreateObject("Scripting.Dictionary")
+    'get used row count
+    RowCount = Worksheets("sheet2").UsedRange.Rows.Count
+    
+    For i = 1 To RowCount
+    'check if primitive name is same for two consecutive entries
+        sPrimitiveName = Range("B" & i)
+        iTimeTaken = Range("C" & i)
+        sPrimitiveStatus = Range("D" & i)
+            'check if Auto TestCase name is same for two respective primitives
+        If ((Range("B" & i).Value = Range("B" & i + 1).Value) And ((Range("A" & i).Value = Range("A" & i + 1).Value) And (Range("C" & i).Value > Range("C" & i + 1).Value)) Or (Range("A" & i).Value <> Range("A" & i + 1).Value)) Or (Range("B" & i).Value <> Range("B" & i + 1).Value) Then
+            'assign the largest number as the time taken for the respective primitive
+            '# Take highest time of first execution if same same primitive called twice in the same test case
+            If DictObj.Exists(sPrimitiveName) Then
+                sTemp = DictObj.Item(sPrimitiveName)
+                arrTemp = Split(sTemp, ":")
+                If InStr(1, sPrimitiveStatus, "Pass") Then
+                    arrTemp(0) = arrTemp(0) + 1
+                    arrTemp(2) = arrTemp(2) + iTimeTaken
+                Else
+                    arrTemp(1) = arrTemp(1) + 1
+                End If
+                sTemp = arrTemp(0) & ":" & arrTemp(1) & ":" & arrTemp(2)
+                DictObj.Item(sPrimitiveName) = sTemp
+            Else
+                If InStr(1, sPrimitiveStatus, "Pass") Then
+                    sTemp = "1:0:" & iTimeTaken
+                    DictObj.Add sPrimitiveName, sTemp
+                Else
+                    sTemp = "0:1:0"
+                    DictObj.Add sPrimitiveName, sTemp
+                End If
+            End If
+        End If
+    Next
+    Call writeInExcel(DictObj, "C:\Demo_DB_Graphs\demoGraphDataBreakdownRelease16_3.xlsx")
+        
+End Sub
+
+Function writeInExcel(objKeyValue, sFilePath)
+    
+    Set objExcel = CreateObject("Excel.Application")
+    MsgBox "Writing in Excel.... Please wait."
+    objExcel.Workbooks.Open (sFilePath)
+    objExcel.Visible = False
+    With objExcel.Worksheets("PrimitiveExecutionStatus")
+        .Range("A2:F" & .Range("A2").End(xlDown).Row).ClearContents
+        .Range("B2:F" & .Range("A2").End(xlDown).Row).ClearContents
+        .Range("C2:F" & .Range("A2").End(xlDown).Row).ClearContents
+        .Range("D2:F" & .Range("A2").End(xlDown).Row).ClearContents
+    End With
+    iRow = 2
+    For Each objKey In objKeyValue.Keys()
+        objExcel.Workbooks(1).Worksheets("PrimitiveExecutionStatus").Cells(iRow, 1).Value = objKey
+        arrValues = Split(objKeyValue.Item(objKey), ":")
+        objExcel.Workbooks(1).Worksheets("PrimitiveExecutionStatus").Cells(iRow, 2).Value = arrValues(0)
+        objExcel.Workbooks(1).Worksheets("PrimitiveExecutionStatus").Cells(iRow, 3).Value = arrValues(1)
+        objExcel.Workbooks(1).Worksheets("PrimitiveExecutionStatus").Cells(iRow, 4).Value = arrValues(2)
+        iRow = iRow + 1
+    Next
+    
+    objExcel.ActiveWorkbook.Save
+    objExcel.ActiveWorkbook.Close
+    objExcel.Application.Quit
+    'Cleanup
+    Set objExcel = Nothing
+    MsgBox "Primitive data pasted in demo graphs sheet"
+End Function
+
+
+
