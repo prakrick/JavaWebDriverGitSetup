@@ -15,7 +15,6 @@
 #<> (placeholder)
 #""
 ## (Comments)
-
 #Sample Feature Definition Template
 Feature: Login Action
  
