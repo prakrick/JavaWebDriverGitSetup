@@ -1,4 +1,4 @@
-package com.JavaWebDriverGit.TestScript;
+package com.JavaWebDriverGit.InitialSetup;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,7 +12,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
-public class Test_Steps {
+public class Test_Steps_Cucumber {
 
 	private static WebDriver driver = null;
 

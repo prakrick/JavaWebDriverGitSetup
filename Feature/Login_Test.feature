@@ -17,18 +17,14 @@
 ## (Comments)
 #Sample Feature Definition Template
 Feature: Login Action
- 
+ @12
 Scenario: Successful Login with Valid Credentials
 	Given User is on Home Page
 	When User Navigate to LogIn Page
 	And User enters UserName and Password
 	Then Message displayed Login Successfully
- 
+
 Scenario: Successful LogOut
 	When User LogOut from the Application
 	Then Message displayed LogOut Successfully
 	
-	
-Scenario: Check if dryRun Adds unimplemented method
-	When User dryRun True enabled created method in given
-	Then dryRun True enabled created method in given
